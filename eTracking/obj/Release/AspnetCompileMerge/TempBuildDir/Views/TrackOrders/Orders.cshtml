@@ -1,0 +1,1272 @@
+﻿@{
+    ViewBag.Title = "Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    <link href="~/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <script type="text/javascript">
+        var appRoot = '@System.Web.Configuration.WebConfigurationManager.AppSettings["RootPath"]';
+        var EbookingRoot = '@System.Web.Configuration.WebConfigurationManager.AppSettings["eBookingUrl"]';
+    </script>
+    <style>
+        fieldset {
+            border: 1px solid #ddd !important;
+            margin: 0;
+            padding: 10px;
+            position: relative;
+            border-radius: 4px;
+            background-color: #a6a6a6;
+            padding-left: 10px !important;
+        }
+
+        legend {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 0px;
+            width: 35%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px 5px 5px 10px;
+            background-color: #ffffff;
+        }
+
+        .ag-tool-panel {
+            display: none;
+        }
+
+        .search_block {
+            margin: 0 5px;
+        }
+
+        #ddlStatus {
+            -moz-appearance: none; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+        }
+
+        .ui-autocomplete.ui-widget {
+            font-family: Verdana,Arial,sans-serif;
+            font-size: 12px;
+            width: auto !important;
+        }
+
+        button.multiselect {
+            font-size: 12px;
+            background-color: #fff;
+            text-align: left;
+        }
+
+        .dropdown-menu {
+            font-size: .9rem;
+            overflow: hidden scroll !important;
+        }
+
+        .multiselect-container > li > a > label {
+            padding: 2px 5px;
+        }
+
+        .form-control.multiselect-search {
+            padding: 2px 5px;
+            width: calc(100% - 10px) !important;
+            flex: unset;
+            height: 25px;
+            font-size: 14px;
+        }
+
+        .multiselect-clear-filter {
+            display: none;
+        }
+
+        .multiselect-container > li {
+            padding: 0;
+            white-space: nowrap;
+        }
+
+        .filterbar li {
+            margin-right: 15px;
+        }
+
+        #peidlist_chosen {
+            width: 270px !important;
+        }
+    </style>
+    <div style="height: 4px; background: #000;"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="filterbar" id="filterBar">
+                <ul class="nav filter_nav">
+                    <li class="nav-item">
+                        <a class="nav-link lnkAdType" val="-1">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active lnkAdType" val="0">Display</a>
+                    </li>
+                    <li class="nav-item">
+                        <input type="hidden" id="hdnIsClassified" value="0" />
+                        <a class="nav-link lnkAdType" val="1">Classified</a>
+                    </li>
+                    <li class="nav-item" style="margin-left: 200px;">
+                        <input type="hidden" id="flag" value="0" />
+                        <a class="nav-links active lnkFlagType" val="0">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-links lnkFlagType" val="2">Credit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-links  lnkFlagType" val="1">Prepaid</a>
+                    </li>
+                    <li class="nav-item" style="margin-left: 110px;">
+                        <a class="nav-linkes lnkOrderType" val="-1">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <input type="hidden" id="orderstatus" value="0" />
+                        <a class="nav-linkes active lnkOrderType" val="0">Active</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-linkes lnkOrderType" val="1">Suspended</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-linkes lnkOrderType" val="2">Cancelled</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!---- hidden fields-->
+            <input type="hidden" id="hdnuserid" value="@Session["UserId"]" />
+            <input type="hidden" id="hdnlogcentreid" value="@Session["CentreID"]" />
+            @*<input type="hidden" id="txtFromDate" />
+                <input type="hidden" id="txtToDate" />*@
+            <input type="hidden" id="hdnScreenId" value="1" />
+            <input type="hidden" id="hdnagencyid" />
+            <input type="hidden" id="hdnclientid" />
+            <input type="hidden" id="hdnActions" />
+            <input type="hidden" id="hdnCancelRights" />
+            <input type="hidden" id="hdnSuspendRights" />
+            <input type="hidden" id="hdnReviveRights" />
+            <input type="hidden" id="hdntxtroid" />
+
+            <!---- filter Options-->
+            <div class="filterbar_two" id="filterBarTwo">
+                <ul class="nav">
+                    @*<li>
+                            <button type="button" class="refresh_btn" onclick="RefreshData();" title="RefreshData"> <img src="~/img/refresh_24.png" /></button>
+                        </li>*@
+                    @*<li>
+                            <div class="input-group">
+                                <div id="inputBox2" class="input_box">
+                                    <input id="rangeFrom2" class="form-control form-control-sm range_from" type="text" maxlength="10" onkeypress="return isNumber(event)" placeholder="From BoxNum">
+                                    <input id="rangeTo2" class="form-control form-control-sm form-control range_to" type="text" maxlength="10" readonly="readonly" onkeypress="return isNumber(event)" placeholder="To">
+                                </div>
+                                <button class="input_search_box_btn" id="btnSearch" type="button" onclick='ShowOrderstrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>
+                        </li>*@
+                    <li>
+                        <div class="input-group">
+                            <div id="inputBox4" class="input_box">
+                                <input id="rangeFrom4" class="form-control form-control-sm range_from" type="text" maxlength="10" onkeypress="return isNumber(event)" placeholder="From ROID">
+                                <input id="rangeTo4" class="form-control form-control-sm form-control range_to" type="text" maxlength="10" readonly="readonly" onkeypress="return isNumber(event)" placeholder="To">
+                            </div>
+                            <button class="input_search_box_btn" id="btnSearch" type="button" onclick='ShowOrderstrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="input-group">
+                            <div id="inputBox3" class="input_box">
+                                <input id="rangeFrom3" class="form-control form-control-sm range_from" type="text" maxlength="10" onkeypress="return isNumber(event)" placeholder="From BookingID">
+                                <input id="rangeTo3" class="form-control form-control-sm form-control range_to" type="text" maxlength="10" readonly="readonly" onkeypress="return isNumber(event)" placeholder="To">
+                            </div>
+                            <button class="input_search_box_btn" id="btnSearch" type="button" onclick='ShowOrderstrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="input-group">
+                            <div id="inputBox5" class="input_box">
+                                <input id="rangeFrom5" class="form-control form-control-sm range_from" type="text" maxlength="10" onkeypress="return isNumber(event)" placeholder="From Receipt">
+                                <input id="rangeTo5" class="form-control form-control-sm form-control range_to" type="text" maxlength="10" readonly="readonly" onkeypress="return isNumber(event)" placeholder="To">
+                            </div>
+                            <button class="input_search_box_btn" id="btnSearch" type="button" onclick='ShowOrderstrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="input-group">
+                            <div id="inputBox1" class="input_box">
+                                <input id="rangeFrom1" class="form-control form-control-sm range_from" type="text" maxlength="10" onkeypress="return isNumber(event)" placeholder="From Invoice">
+                                <input id="rangeTo1" class="form-control form-control-sm form-control range_to" type="text" maxlength="10" readonly="readonly" onkeypress="return isNumber(event)" placeholder="To">
+                            </div>
+                            <button class="input_search_box_btn" id="btnSearch" type="button" onclick='ShowOrderstrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                        </div>
+                    </li>
+                    <li>
+                        <button type="button" class="refresh_btn" onclick="RefreshData();" title="RefreshData"> <img src="~/img/refresh_24.png" /></button>
+                    </li>
+                </ul>
+            </div>
+
+            <!--Table Grid -->
+            <div class="site_inner_container row-eq-height" id="siteInnerContainer">
+                <div style="width:308px;padding-left:5px;padding-right:5px;">
+                    <div class="booking_caleder">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" style="margin-right:30px;">
+                                <input type="hidden" id="dateflag" value="2" />
+                                <a class="nav-linkdate active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true" val="2">Publish Date</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-linkdate" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="false" val="1">Booking Date</a>
+                            </li>
+
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div>
+                                <input type="text" id="txtFromDate" readonly="readonly" placeholder="From Date" style="width: 39%;">
+                                <input type="text" id="txtToDate" readonly="readonly" placeholder="TO Date" style="width: 41%; margin-left: 22px;">
+                            </div>
+                        </div>
+                        <span class="refresh_icon" title="refresh" onclick="refreshdate()">
+                            <img src="~/img/refresh_darkgrey_24.png" />
+                        </span>
+                    </div>
+
+                    <div class="block_one" style="width: 100%; height: calc(100% - 77px);">
+                        <div class="row" style="float:left;">
+                            <div class="col-sm-3 filter_label">
+                                <label>Agency</label>
+                            </div>
+                            <div class="col-sm-9 filter_field">
+                                <input class="form-control form-control-sm" id="agencyid" parameter="agency" />
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>Client</label>
+                            </div>
+                            <div class="col-sm-9 filter_field">
+                                <input class="form-control form-control-sm" id="clientid" parameter="client" />
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>Canvassor</label>
+                            </div>
+                            <div class="col-sm-9 filter_field">
+                                <input class="form-control form-control-sm" id="canvassorid" parameter="canvassor" style="width:100% ;" />
+                            </div>
+                            <div>
+                                <ul class="nav filter_navtab">
+                                    <li class="nav-item">
+                                        <a class="lnkTabtype active" val="0">Tab #1</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="lnkTabtype" val="1">Tab #2</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="lnkTabtype" val="2">Tab #3</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+
+                            <div class="block_one" id="tab1" style="width: 100%; height: calc(100% - 77px);">
+                                <div class="row" style="float:left;">
+
+                                    <div class="col-sm-3 filter_label">
+                                        <label>RO Num</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <input class="form-control form-control-sm" id="ronumber" style="width: 100%;" maxlength="9" />
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Box Num</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <input class="form-control form-control-sm" id="boxnumber" style="width: 100%;" maxlength="9" />
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Package</label>
+                                    </div>
+                                    <div id="PackageType" class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="packageidlist" newflag="forXmltype" parameter="package" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Premia</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="premiaid" newflag="forXmlAdtype" parameter="premia" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Bk Centre</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="bookingcentreid" newflag="forXmltype" parameter="bookingcentre" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Ad Type</label>
+                                    </div>
+                                    <div id="divADType" class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="adtypeidlist" newflag="forXmlAdtype" parameter="adtype" style="width: 100%;" multiflag="multiple" multiple></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label> Size</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="adsizeid" newflag="forXmlAdtype" parameter="adsize" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label> Colour</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="colorid" newflag="forXmltype" parameter="color" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Cust Type</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="customertypeid" newflag="forXmltype" parameter="customertype" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>SME</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="smeid" newflag="forXmltype" parameter="sme" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>M Status </label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="materialstatusid" newflag="forXmltype" parameter="materialstatus" style="width: 100%;" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Book Exe.</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="bookingexecid" newflag="forXmltype" parameter="bookingexec" style="width: 100%;"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="block_one" id="tab2" style="width: 100%; height: calc(100% - 77px); display: none;">
+                                <div class="row" style="float:left;">
+                                    <div class="col-sm-3 filter_label">
+                                        <label> Style</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="stylesheetid" newflag="forXmlAdtype" parameter="style" style="width: 100%;" disabled></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Cl Cat1</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="adtypeid1" parameter="childadtype" style="width: 100%;" disabled style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Cl Cat2</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="adtypeid2" parameter="childadtype" style="width: 100%;" disabled style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Cl Cat3</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="adtypeid3" parameter="childadtype" style="width: 100%;" disabled style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Cl Cat4</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="adtypeid4" parameter="childadtype" style="width: 100%;" disabled style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Product</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="productid" newflag="forXmltype" parameter="product" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Box Type</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="boxtypeid" newflag="forXmltype" parameter="boxtype" style="width: 100%;" style="width: 100%;"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Agn Type</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" style="background-color:#fff !important;" id="agencycatid" newflag="forXmltype" parameter="agencycat" onchange="agencyidchange()"></select>
+                                    </div>
+                                    <div class="col-sm-3 filter_label">
+                                        <label>Client Ty.</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" style="background-color:#fff !important;" id="clientcatid" newflag="forXmltype" parameter="clientcat" onchange="clientidchange()"></select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="block_one" id="tab3" style="width: 100%; height: calc(100% - 77px); display: none;">
+                                <div class="row">
+                                    <div class="col-sm-3 filter_label">
+                                        <label> PayType</label>
+                                    </div>
+                                    <div class="col-sm-9 filter_field">
+                                        <select class="form-control form-control-sm" id="paymenttypeid" newflag="forXmltype" parameter="paymenttype" style="width: 100%;"></select>
+                                    </div>
+                                    <br />
+                                    <div id="PEType" style="width:270px;font-size:13px;">
+                                        <select id="peidlist" newflag="forXmltype" parameter="peidlist" class="chosen" data-order="true" name="multiselect[]" multiple="true" data-placeholder="Type PE here.."></select>
+                                    </div>
+                                    <span style="margin-right: -22px; background: #fff; height: 27px; margin-top: 1px; cursor: pointer;" title="Remove all PE from list!" onclick="clearpelist()">&#10005;</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div style="width:1055px;padding-left:17px;padding-right:5px;">
+                    <div class="block_two" style="width: 100%;  height:96%;">
+                        <div id="SummaryMainGrid" style="width: 100%;  height:100%;"></div>
+
+                    </div>
+                    <!-- Record Count And Total Amount -->
+                    <div style="font-size: 12px; background: #3c689e; display: flex; flex-direction: row; align-items: center; justify-content: flex-end; height: 20px;">
+                        <label style="color: #fff; font-size: 13px; font-weight: bold; margin-bottom: 0.1rem !important; ">Records :&nbsp;</label>
+                        <input type="text" id="txttotalrecord" readonly="readonly" style="width: auto; background: transparent; color: #fff; border: none; width: 60px; font-size: 12px; font-weight: bold;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Footer Buttons button_set_bottom -->
+        <div class="container-fluid" id="btnprovisional">
+            <div class="row">
+                <div class="col-lg-3" style="padding: 0;">
+                    <div style="width: 90px; min-height: 1px; float: left; margin-right: 20px; "><a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" onclick="ShowOrderstrackingData(appRoot, $('#SummaryMainGrid'))">SHOW<img src="~/img/ok_white_24.png" /></a></div>
+                    <div style="width: 132px; min-height: 1px; float: left; margin-right: 20px; display:none;"><a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" id="btnopen" style="background-color: transparent; pointer-events:none; cursor: not-allowed; color: #fff;" onclick="OrderOpentrackingData(appRoot, $('#SummaryMainGrid'))"> OPEN ORDER<img src="~/img/ok_white_24.png" /></a></div>
+                    <div style="width: 132px; min-height: 1px; float: left;"><a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" id="btnrefresh" onclick="RefreshOrdertrackingData()"> REFRESH<img src="~/img/refresh_24.png" /></a></div>
+                </div>
+                <div class="col-lg-9" style="padding: 0;">
+                    <div style="width: 77px; min-height: 1px; float: left; margin-right: 65px;margin-left:-24px;"><a class="btn btn-primary adpro_greea_ui_btn" href="#" target="eBooking" role="button" style="background-color: transparent; pointer-events: none; cursor: not-allowed; color: #fff;" onclick="return OrderOpenBookingData(EbookingRoot, $('#SummaryMainGrid'))" id="lnkOpenBooking">OPEN BOOKING</a></div>
+                    <div style="width: 151px; min-height: 1px; float: left; margin-right: 20px; "><a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="background-color: transparent; pointer-events: none; cursor: not-allowed; color: #fff;" val="1" id="btncancel">CANCEL ORDER <img src="~/img/delete_white_24.png" /></a></div>
+                    <div style="width: 0px; min-height: 1px; float: left; margin-right: 20px; "><a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="background-color: transparent; pointer-events: none; cursor: not-allowed; color: #fff;" val="2" id="btnsuspend">SUSPEND ORDER <img src="~/img/cross_white_24.png" /></a></div>
+                    <div style="width: 150px; min-height: 1px; float: left; margin-right: 10px; "><a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="background-color: transparent; pointer-events: none; cursor: not-allowed; color: #fff; display: none;" val="3" id="btnrevive">REVIVE ORDER <img src="~/img/ok_white_24.png" /></a></div>
+                    <div style="width: 70px; min-height: 1px; float: left; margin-right: 25px; "><a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="background-color: transparent; pointer-events: none; cursor: not-allowed; color: #fff;" onclick="OrdermylogtrackingData(appRoot, $('#SummaryMainGrid'))" id="btnuserhistory"> MY LOG</a></div>
+                    <div style="width: 77px; min-height: 1px; float: left; margin-right: 20px; "><a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="background-color: transparent; pointer-events: none; cursor: not-allowed; color: #fff;" onclick="OrderhistorytrackingData(appRoot, $('#SummaryMainGrid'))" id="btnorderhistory">HISTORY</a></div>
+                    <div style="width: 77px; min-height: 1px; float: left; margin-right: 10px; "><a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="background-color: transparent; pointer-events: none; cursor: not-allowed; color: #fff;" id="lnkExportData">EXPORT DATA</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agency Filter Modal -->
+    <div class="modal fade adpro_modal_ui" id="agencyFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle" style="text-align:left;">Agency Filter</h5>
+                    <span data-dismiss="modal"><img src="~/img/cross_white_24.png" /></span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div style="width:100%;">
+                                <table style="width:100%;" cellpadding="5">
+                                    <tr>
+                                        <td style="white-space:nowrap;"><label class="col-form-label">Agency Type</label></td>
+                                        <td><select class="form-control form-control-sm" style="background-color:#fff !important;" id="agencycatid" newflag="forXmltype" parameter="agencycat" onchange="agencyidchange()"></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="white-space:nowrap;"><label class="col-form-label">Agency Name</label></td>
+                                        <td><input class="form-control form-control-sm" style="background-color:#fff !important;" id="agencynameid" parameter="agency" onchange="agencynamechange()" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" data-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Filter Modal -->
+    <div class="modal fade adpro_modal_ui" id="clientFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle" style="text-align:left;">Client Filter</h5>
+                    <span data-dismiss="modal"><img src="~/img/cross_white_24.png" /></span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div style="width:100%;">
+                                <table style="width:100%;" cellpadding="5">
+                                    <tr>
+                                        <td style="white-space:nowrap;"><label class="col-form-label">Client Type</label></td>
+                                        <td><select class="form-control form-control-sm" style="background-color:#fff !important;" id="clientcatid" newflag="forXmltype" parameter="clientcat" onchange="clientidchange()"></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="white-space:nowrap;"><label class="col-form-label">Client Name</label></td>
+                                        <td><input class="form-control form-control-sm" style="background-color:#fff !important;" id="clientnameid" parameter="client" onchange="clientnamechange()" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" data-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reason & Remarks Filter Modal for Cancel -->
+    <div class="modal fade adpro_modal_ui" id="CancelReasonRemarksFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle" style="text-align:left;">Cancel Order</h5>
+                    <span data-dismiss="modal"><img src="~/img/cross_white_24.png" /></span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div>
+                                <table cellpadding="5">
+                                    <tr>
+                                        <td style="white-space:nowrap;"><label class="col-form-label">Reason</label></td>
+                                        <td><select class="form-control form-control-sm" style="background-color:#fff !important;" id="Cancelresonid" newflag="forRRXmltype" parameter="cancelsuspendreason"></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="white-space:nowrap;"><label class="col-form-label">Remarks</label></td>
+                                        <td><input class="form-control form-control-sm" style="background-color:#fff !important;" id="Cancelremarkid" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" onclick="CancelOrderstrackingData(appRoot, $('#SummaryMainGrid'))">OK</button>
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reason & Remarks Filter Modal for Suspend -->
+    <div class="modal fade adpro_modal_ui" id="SuspendReasonRemarksFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle" style="text-align:left;">Suspend Order</h5>
+                    <span data-dismiss="modal"><img src="~/img/cross_white_24.png" /></span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div>
+                                <table cellpadding="5">
+                                    <tr>
+                                        <td style="white-space:nowrap;"><label class="col-form-label">Reason</label></td>
+                                        <td><select class="form-control form-control-sm" style="background-color:#fff !important;" id="Suspendreasonid" newflag="forRRXmltype" parameter="cancelsuspendreason"></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="white-space:nowrap;"><label class="col-form-label">Remarks</label></td>
+                                        <td><input class="form-control form-control-sm" style="background-color:#fff !important;" id="Suspendremarkid" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" onclick="SuspendOrderstrackingData(appRoot, $('#SummaryMainGrid'))">OK</button>
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Filter Modal for Revive -->
+    <div class="modal fade adpro_modal_ui" id="ReviveFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle" style="text-align:left;">Revive</h5>
+                    <span data-dismiss="modal"><img src="~/img/cross_white_24.png" /></span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="rescheduledate" class="col-form-label" style="margin: 10px;">Reschedule Date</label>
+                            <input type="text" id="txtRescheduleDate" readonly="readonly" placeholder="Reshedule Date" />
+                        </div>
+                        <fieldset>
+                            <legend>Level</legend>
+                            <div>
+                                <span style="float: left; width: 33%;">
+                                    <input id="RadioItem" type="radio" name="ActiveType" value="1" style="outline: none; display: block; width: auto; float: left; margin: 10px 10px 10px 0;" checked />
+                                    <label for="RadioItem" style="margin: 10px; line-height: 12px;">Item Level</label>
+                                </span>
+                                <span style="float: left; width: 33%;">
+                                    <input id="RadioEdition" type="radio" name="ActiveType" value="2" style="outline: none; display: block; width: auto; float: left; margin: 10px 10px 10px 0;" />
+                                    <label for="RadioEdition" style="margin: 10px; line-height: 12px;">Edition Level</label>
+                                </span>
+                                <span style="float: left; width: 33%;">
+                                    <input id="RadioOrder" type="radio" name="ActiveType" value="3" style="outline: none; display: block; width: auto; float: left; margin: 10px 10px 10px 0;" />
+                                    <label for="RadioOrder" style="margin: 10px; line-height: 12px;">Order Level</label>
+                                </span>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" onclick="ReviveOrderstrackingData(appRoot, $('#SummaryMainGrid'))">OK</button>
+                    <button type="button" class="btn btn-primary adpro_greea_ui_btn" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Processing Bar -->
+    <div id="divProcessingBox" style="display: none; ">
+        <img src="~/img/processing.gif" style="display: block;width:100px;height:100px;" />
+    </div>
+
+    <!-- History window -->
+    <div id="divPopUp" style="display: none;overflow:hidden;">
+        <div style=" color: #fff; background-color: #3c689e; font-size:16px;padding:.3rem;">
+            Order History
+            <span onclick="$('#divPopUp').dialog('close')" style="float:right;"><img src="~/img/cross_white_24.png" /></span>
+            @*<button id="btnClose" onclick="$('#divPopUp').dialog('close')" style="float:right;"><img src="~/img/cross_white_24.png" /></button>*@
+        </div>
+        <label id="lblPopupData" style="width:100%;height:90%;overflow:scroll;white-space:nowrap;"></label>
+        <div style="text-align:center;">
+            <button type="button" class="btn btn-primary adpro_greea_ui_btn" onclick="$('#divPopUp').dialog('close')" style="position:absolute;bottom:0;">OK</button>
+        </div>
+    </div>
+
+    <!-- Mylog window -->
+    <div id="divlogPopUp" style="display: none; overflow:hidden;">
+        <div style=" color: #fff; background-color: #3c689e; font-size:16px;padding:.3rem;">
+            User History
+            <span onclick="$('#divlogPopUp').dialog('close')" style="float:right;"><img src="~/img/cross_white_24.png" /></span>
+            @* <button id="btnClose" onclick="$('#divlogPopUp').dialog('close')" style="float:right;"><img src="~/img/cross_white_24.png" /></button>*@
+        </div>
+        <label id="lbllogPopupData" style="width:100%;height:90%;overflow:scroll;"></label>
+        <div style="text-align:center;">
+            <button type="button" class="btn btn-primary adpro_greea_ui_btn" onclick="$('#divlogPopUp').dialog('close')" style="position:absolute;bottom:0;">OK</button>
+        </div>
+    </div>
+
+
+    <!-- Search Agency window -->
+    <div id="divViewAgencyPopUp" title="Search Agency" style="display: none;">
+        <div style=" color: #fff; background-color: #3c689e; font-size:16px;padding:.3rem;">
+            Search Agency
+            <span onclick="$('#divViewAgencyPopUp').dialog('close')" style="float:right;"><img src="~/img/cross_white_24.png" /></span>
+        </div>
+        <div>
+            <table class="table table-borderless">
+                <tr>
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control form-control-sm" placeholder="Name" id="SearchAgencyName" onkeyup="SearchAgencyDetail()">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" placeholder="Code" id="SearchAgencyCode" onkeyup="SearchAgencyDetail()">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control form-control-sm" placeholder="Category" id="SearchAgencyCategory" onkeyup="SearchAgencyDetail()">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" placeholder="City" id="SearchAgencyCity" onkeyup="SearchAgencyDetail()">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control form-control-sm" placeholder="Address" id="SearchAgencyAddress" onkeyup="SearchAgencyDetail()">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div id="lblViewAgencyPopupData" style="white-space:nowrap;cursor:pointer;height:90%;overflow:scroll;"></div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="btn btn-primary adpro_greea_ui_btn" onclick="FillSearchAgency()">OK</button>
+        </div>
+    </div>
+
+    <!-- Search Client window -->
+    <div id="divViewClientPopUp" title="Search Client">
+        <div style=" color: #fff; background-color: #3c689e; font-size:16px;padding:.3rem;">
+            Search Client
+            <span onclick="$('#divViewClientPopUp').dialog('close')" style="float:right;"><img src="~/img/cross_white_24.png" /></span>
+        </div>
+        <div>
+            <table class="table table-borderless">
+                <tr>
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control form-control-sm" placeholder="Name" id="SearchClientName" onkeyup="SearchClientDetail()">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" placeholder="ID" id="SearchClientID" onkeyup="SearchClientDetail()">
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" placeholder="City" id="SearchClientCity" onkeyup="SearchClientDetail()">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control form-control-sm" placeholder="Address" id="SearchClientAddress" onkeyup="SearchClientDetail()">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group row">
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control form-control-sm" placeholder="Old Code" id="SearchClientOldCode" onkeyup="SearchClientDetail()">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div id="lblViewClientPopupData" style="white-space:nowrap;cursor:pointer;height:90%;overflow:scroll;"></div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="btn btn-primary adpro_greea_ui_btn" onclick="FillSearchClient()">OK</button>
+        </div>
+    </div>
+
+
+    <script src="~/Scripts/main.js?BuildNo=@System.Web.Configuration.WebConfigurationManager.AppSettings["BuildNo"]"></script>
+    <script src="~/Scripts/Orders.js?BuildNo=@System.Web.Configuration.WebConfigurationManager.AppSettings["BuildNo"]"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#txtFromDate').datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", "+1d");
+            $('#txtToDate').datepicker({ dateFormat: "dd/mm/yy", minDate: 0 }).datepicker("setDate", "+1d");
+            // Date change
+            $("#txtFromDate").change(function () {
+                $("#txtToDate").datepicker('option', 'minDate', $("#txtFromDate").val());
+                $("#txtToDate").val($("#txtFromDate").val());
+            });
+            $("#inputBox1").summitRangeInput({
+                rangeFrom: '#rangeFrom1',
+                rangeTo: '#rangeTo1',
+                separator: '#separator1',
+            });
+            $("#inputBox2").summitRangeInput({
+                rangeFrom: '#rangeFrom2',
+                rangeTo: '#rangeTo2',
+                separator: '#separator2',
+            });
+            $("#inputBox3").summitRangeInput({
+                rangeFrom: '#rangeFrom3',
+                rangeTo: '#rangeTo3',
+                separator: '#separator3',
+            });
+            $("#inputBox4").summitRangeInput({
+                rangeFrom: '#rangeFrom4',
+                rangeTo: '#rangeTo4',
+                separator: '#separator4',
+            });
+            $("#inputBox5").summitRangeInput({
+                rangeFrom: '#rangeFrom5',
+                rangeTo: '#rangeTo5',
+                separator: '#separator5',
+            });
+
+            $('#rangeFrom1,#rangeFrom2,#rangeFrom3,#rangeFrom4,#rangeFrom5').bind("cut copy paste", function (e) {
+                e.preventDefault();
+            });
+
+
+            $('#rangeFrom1').keyup(function () {
+                if (this.value == "") {
+                    $(".block_one *").prop('disabled', false).css("opacity", "");
+                    $(".booking_caleder ").css("pointer-events", "").css("opacity", "");
+                    $("#rangeTo1").prop('readonly', true);
+                }
+                else {
+                    $(".block_one *").prop('disabled', true).css("opacity", "0.5");
+                    $(".booking_caleder ").css("pointer-events", "none").css("opacity", "0.5");
+                    $("#rangeTo1").prop('readonly', false);
+                }
+                $('#rangeTo1').val(this.value);
+            });
+            $('#rangeFrom2').keyup(function () {
+                if (this.value == "") {
+                    $(".block_one *").prop('disabled', false).css("opacity", "");
+                    $(".booking_caleder ").css("pointer-events", "").css("opacity", "");
+                    $("#rangeTo2").prop('readonly', true);
+                }
+                else {
+                    $(".block_one *").prop('disabled', true).css("opacity", "0.5");
+                    $(".booking_caleder ").css("pointer-events", "none").css("opacity", "0.5");
+                    $("#rangeTo2").prop('readonly', false);
+                }
+                $('#rangeTo2').val(this.value);
+            });
+            $('#rangeFrom3').keyup(function () {
+                if (this.value == "") {
+                    $(".block_one *").prop('disabled', false).css("opacity", "");
+                    $(".booking_caleder ").css("pointer-events", "").css("opacity", "");
+                    $("#rangeTo3").prop('readonly', true);
+                }
+                else {
+                    $(".block_one *").prop('disabled', true).css("opacity", "0.5");
+                    $(".booking_caleder ").css("pointer-events", "none").css("opacity", "0.5");
+                    $("#rangeTo3").prop('readonly', false);
+                }
+                $('#rangeTo3').val(this.value);
+            });
+            $('#rangeFrom4').keyup(function () {
+                if (this.value == "") {
+                    $(".block_one *").prop('disabled', false).css("opacity", "");
+                    $(".booking_caleder ").css("pointer-events", "").css("opacity", "");
+                    $("#rangeTo4").prop('readonly', true);
+                }
+                else {
+                    $(".block_one *").prop('disabled', true).css("opacity", "0.5");
+                    $(".booking_caleder ").css("pointer-events", "none").css("opacity", "0.5");
+                    $("#rangeTo4").prop('readonly', false);
+                }
+                $('#rangeTo4').val(this.value);
+            });
+            $('#rangeFrom5').keyup(function () {
+                if (this.value == "") {
+                    $(".block_one *").prop('disabled', false).css("opacity", "");
+                    $(".booking_caleder ").css("pointer-events", "").css("opacity", "");
+                    $("#rangeTo5").prop('readonly', true);
+                }
+                else {
+                    $(".block_one *").prop('disabled', true).css("opacity", "0.5");
+                    $(".booking_caleder ").css("pointer-events", "none").css("opacity", "0.5");
+                    $("#rangeTo5").prop('readonly', false);
+                }
+                $('#rangeTo5').val(this.value);
+            });
+
+            $('#inputBox1').bind('keypress', function (e) {
+                $('#inputBox2,#inputBox3,#inputBox4,#inputBox5').find('input:text').val('');
+            });
+            $('#inputBox2').bind('keypress', function (e) {
+                $('#inputBox1,#inputBox3,#inputBox4,#inputBox5').find('input:text').val('');
+            });
+            $('#inputBox3').bind('keypress', function (e) {
+                $('#inputBox1,#inputBox2,#inputBox4,#inputBox5').find('input:text').val('');
+            });
+            $('#inputBox4').bind('keypress', function (e) {
+                $('#inputBox1,#inputBox2,#inputBox3,#inputBox5').find('input:text').val('');
+            });
+            $('#inputBox5').bind('keypress', function (e) {
+                $('#inputBox1,#inputBox2,#inputBox3,#inputBox4').find('input:text').val('');
+            });
+
+            //var start = moment().subtract(29, 'days');
+            //var end = moment();
+
+            //var start = moment();
+            //var end = moment();
+
+            //$('#orderRange').daterangepicker({
+            //    "drops": "down",
+            //    startDate: start,
+            //    endDate: end,
+            //    locale: {
+            //        format: 'DD/M/YYYY'
+            //    }
+            //}, cb);
+
+            //cb(start, end);
+
+            Orderspageload(appRoot);
+            $(".chosen").chosen({ enable_search_threshold: 10 });
+            $('#adtypeidlist').change();
+
+            $('.lnkAdType').click(function () {
+                $('.lnkAdType.active').removeClass('active');
+                $(this).addClass('active');
+                $('#hdnIsClassified').val($(this).attr('val'));
+                // $('.block_one').find('input:text').val('');
+                $("#adtypeidlist").multiselect('rebuild');
+                //$("#packageidlist").multiselect('rebuild');
+                //$("#peidlist").multiselect('rebuild');
+                // BindOrdersFiltersData(appRoot);
+                BindOrdersAdtypeData(appRoot)
+                $('#adtypeidlist').change();
+                hidefilter();
+                $("#adtypeidlist").multiselect('rebuild');
+                //$("#packageidlist").multiselect('rebuild');
+                //$("#peidlist").multiselect('rebuild');
+                $("#btnrevive").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btncancel").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnsuspend").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnorderhistory").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnuserhistory").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#lnkOpenBooking").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                ShowOrderstrackingData(appRoot, $("#SummaryMainGrid"));
+            });
+
+            $('.lnkOrderType').click(function () {
+                $('.lnkOrderType.active').removeClass('active');
+                $(this).addClass('active');
+                $('#orderstatus').val($(this).attr('val'));
+                //$('.block_one').find('input:text').val('');
+                $("#btnrevive").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btncancel").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnsuspend").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnorderhistory").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnuserhistory").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#lnkOpenBooking").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                ShowOrderstrackingData(appRoot, $("#SummaryMainGrid"));
+            });
+
+            $('.lnkFlagType').click(function () {
+                $('.lnkFlagType.active').removeClass('active');
+                $(this).addClass('active');
+                $('#flag').val($(this).attr('val'));
+                //$('.block_one').find('input:text').val('');
+                $("#btnrevive").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btncancel").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnsuspend").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnorderhistory").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnuserhistory").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#lnkOpenBooking").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                ShowOrderstrackingData(appRoot, $("#SummaryMainGrid"));
+            });
+
+            $('.lnkTabtype').click(function () {
+                $('.lnkTabtype.active').removeClass('active');
+                $(this).addClass('active');
+                var tabvalue = $(this).attr('val');
+                if (tabvalue == 1) {
+                    $("#tab2").show();
+                    $("#tab1").hide();
+                    $("#tab3").hide();
+                }
+                else if (tabvalue == 2) {
+                    $("#tab3").show();
+                    $("#tab1").hide();
+                    $("#tab2").hide();
+                }
+                else {
+                    $("#tab1").show();
+                    $("#tab2").hide();
+                    $("#tab3").hide();
+                }
+                $("#btnrevive").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btncancel").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnsuspend").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btntransfer").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnreschedule").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnorderhistory").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#btnuserhistory").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+                $("#lnkOpenBooking").css("background-color", "transparent").css("pointer-events", "none").css("cursor", "not-allowed").css("color", "#fff");
+            });
+
+            $('.nav-linkdate').click(function () {
+                $('.nav-linkdate.active').removeClass('active');
+                $(this).addClass('active');
+                $('#dateflag').val($(this).attr('val'));
+                if ($('#dateflag').val() == 2) {
+                    $('#txtFromDate').datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", "+1d");
+                    $('#txtToDate').datepicker({ dateFormat: "dd/mm/yy", minDate: 0 }).datepicker("setDate", "+1d");// new Date()
+                    $("#txtToDate").val($("#txtFromDate").val());
+                }
+                else {
+                    $('#txtFromDate').datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", new Date());
+                    $('#txtToDate').datepicker({ dateFormat: "dd/mm/yy", minDate: 0 }).datepicker("setDate", new Date());// new Date()
+                    $("#txtToDate").val($("#txtFromDate").val());
+                }
+            });
+
+            // SET PAGE HEIGHT AND WIDTH // New comment by sarvesh at 29072019
+            var windowHeight = $(window).height();
+            var headerHeight = $("#header").outerHeight(true);
+            var filterbarHeight = $("#filterBar").outerHeight(true);
+            var filterbarTwoHeight = $("#filterBarTwo").outerHeight(true);
+            var bottomButton = 50;
+            var height = windowHeight - (headerHeight + filterbarHeight + filterbarTwoHeight + bottomButton);
+            $("#siteInnerContainer").css({ 'height': height });
+
+            //$("#packageidlist").multiselect({
+            //    maxHeight: 140,
+            //    //    buttonWidth: 100,
+            //    numberDisplayed: 1,
+            //    Width: 400,
+            //    nonSelectedText: '<All>',
+            //    enableFiltering: true,
+            //    enableCaseInsensitiveFiltering: true,
+            //    includeSelectAllOption: true,
+            //    enableFullValueFiltering: true
+            //});
+            $("#adtypeidlist").multiselect({
+                maxHeight: 140,
+                //    buttonWidth: 100,
+                numberDisplayed: 1,
+                Width: 400,
+                nonSelectedText: '<All>',
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true,
+                includeSelectAllOption: true,
+                enableFullValueFiltering: true
+            });
+            //$("#peidlist").multiselect({
+            //    maxHeight: 140,
+            //    //    buttonWidth: 100,
+            //    numberDisplayed: 1,
+            //    Width: 400,
+            //    nonSelectedText: '<All>',
+            //    enableFiltering: true,
+            //    enableCaseInsensitiveFiltering: true,
+            //    includeSelectAllOption: true,
+            //    enableFullValueFiltering: true
+            //});
+
+            //open modal
+            $("#filter_agency").on("click", function () {
+                $('#agencyFilter').css("top", "0").css("left", "0");
+                $("#agencyid").val('');
+                $("#agencynameid").val('');
+                $("#agencyFilter").modal("show");
+                $('#agencyFilter').draggable();
+            });
+
+            $("#filter_client").on("click", function () {
+                $('#clientFilter').css("top", "0").css("left", "0");
+                $("#clientid").val('');
+                $("#clientnameid").val('');
+                $("#clientFilter").modal("show");
+                $('#clientFilter').draggable();
+            });
+
+            $("#btncancel").on("click", function () {
+                $('#CancelReasonRemarksFilter').css("top", "0").css("left", "0");
+                $('#hdnActions').val($(this).attr('val'));
+                CheckActionsOrderstrackingData(appRoot, $('#SummaryMainGrid'));
+                $('#CancelReasonRemarksFilter').draggable();
+            });
+
+            $("#btnsuspend").on("click", function () {
+                $('#SuspendReasonRemarksFilter').css("top", "0").css("left", "0");
+                $('#hdnActions').val($(this).attr('val'));
+                CheckActionsOrderstrackingData(appRoot, $('#SummaryMainGrid'));
+                $('#SuspendReasonRemarksFilter').draggable();
+            });
+
+            $("#btnrevive").on("click", function () {
+                $('#ReviveFilter').css("top", "0").css("left", "0");
+                $('#hdnActions').val($(this).attr('val'));
+                $('#txtRescheduleDate').datepicker({ dateFormat: "dd/mm/yy", minDate: 1 }).datepicker("setDate", new Date());
+                CheckActionsOrderstrackingData(appRoot, $('#SummaryMainGrid'));
+                $('#ReviveFilter').draggable();
+            });
+
+            $('#divProcessingBox').dialog({
+                autoOpen: false,
+                height: 130,
+                width: 200,
+                dialogClass: 'dialog-trns-brdr',
+                modal: true,
+            });
+
+            $('#divPopUp').dialog({
+                autoOpen: false,
+                width: 1090,
+                height: 550,
+                modal: true,
+            });
+
+            $('#divlogPopUp').dialog({
+                autoOpen: false,
+                width: 950,
+                height: 550,
+                modal: true,
+            });
+
+            $('#divViewAgencyPopUp').dialog({
+                autoOpen: false,
+                width: 900,
+                height: 500,
+                modal: true,
+            });
+
+            $('#divViewClientPopUp').dialog({
+                autoOpen: false,
+                width: 900,
+                height: 500,
+                modal: true,
+            });
+
+
+            $("#agencyid").keydown(function (e) {
+                if (e.which == 119 || e.keyCode == 119) {
+                    e.preventDefault();
+                    ViewSearchAgencyDetail();
+                }
+            });
+
+            $("#clientid").keydown(function (e) {
+                if (e.which == 119 || e.keyCode == 119) {
+                    e.preventDefault();
+                    ViewSearchClientDetail();
+                }
+            });
+
+        });
+
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode == 13) {
+                ShowOrderstrackingData(appRoot, $("#SummaryMainGrid"));
+            }
+            else if (charCode == 8 || charCode == 46 || charCode == 37 || charCode == 39) {
+                return true;
+            }
+            else if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+
+
+        function agencyidchange() {
+            $("#agencyid").val('');
+        }
+
+        function clientidchange() {
+            $("#clientid").val('');
+        }
+
+        function agencynamechange() {
+            $("#agencyid").val($("#agencynameid").val());
+        }
+
+        function clientnamechange() {
+            $("#clientid").val($("#clientnameid").val());
+        }
+
+        function hidefilter() {
+            var parent_filter = $("#hdnIsClassified").val();
+            if (parent_filter == '0') {
+                $("#adsizeid").removeAttr("disabled");
+                $("#premiaid").removeAttr("disabled");
+                $("#stylesheetid").attr("disabled", "disabled");
+                $("#adtypeid1").attr("disabled", "disabled");
+                $("#adtypeid2").attr("disabled", "disabled");
+                $("#adtypeid3").attr("disabled", "disabled");
+                $("#adtypeid4").attr("disabled", "disabled");
+            } else if (parent_filter == '1') {
+                $("#adsizeid").attr("disabled", "disabled");
+                $("#premiaid").attr("disabled", "disabled");
+                $("#stylesheetid").removeAttr("disabled");
+                $("#adtypeid1").removeAttr("disabled");
+                $("#adtypeid2").removeAttr("disabled");
+                $("#adtypeid3").removeAttr("disabled");
+                $("#adtypeid4").removeAttr("disabled");
+            } else {
+                $("#adsizeid").removeAttr("disabled");
+                $("#stylesheetid").removeAttr("disabled");
+                $("#adtypeid1").removeAttr("disabled");
+                $("#adtypeid2").removeAttr("disabled");
+                $("#adtypeid3").removeAttr("disabled");
+                $("#adtypeid4").removeAttr("disabled");
+                $("#premiaid").removeAttr("disabled");
+            }
+        }
+
+        function refreshdate() {
+            if ($('#dateflag').val() == 2) {
+                $('#txtFromDate').datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", "+1d");
+                $('#txtToDate').datepicker({ dateFormat: "dd/mm/yy", minDate: 0 }).datepicker("setDate", "+1d");// new Date()
+            }
+            else {
+                $('#txtFromDate').datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", new Date());
+                $('#txtToDate').datepicker({ dateFormat: "dd/mm/yy", minDate: 0 }).datepicker("setDate", new Date());// new Date()
+            }
+        }
+
+        function cb(start, end) {
+            $('#orderRange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+            $('#txtFromDate').val(start.format('D/MM/YYYY'));
+            $('#txtToDate').val(end.format('D/MM/YYYY'));
+        }
+
+        function clearpelist() {
+            $(".search-choice-close").click();
+        }
+
+        function matchCustom(params, data) {
+            // If there are no search terms, return all of the data
+            if ($.trim(params.term) === '') {
+                return data;
+            }
+
+            // Do not display the item if there is no 'text' property
+            if (typeof data.text === 'undefined') {
+                return null;
+            }
+
+            // `params.term` should be the term that is used for searching
+            // `data.text` is the text that is displayed for the data object
+            if (data.text.indexOf(params.term.toUpperCase()) == 0) {
+                var modifiedData = $.extend({}, data, true);
+                // modifiedData.text += ' (matched)';
+
+                // You can return modified objects from here
+                // This includes matching the `children` how you want in nested data sets
+                return modifiedData;
+            }
+
+            // Return `null` if the term should not be displayed
+            return null;
+        }
+
+    </script>
+}
+
+
+
+
+
+
+
+

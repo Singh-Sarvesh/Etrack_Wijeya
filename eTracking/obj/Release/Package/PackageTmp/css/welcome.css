@@ -1,0 +1,190 @@
+/*
+ * Globals
+ */
+
+/* Links */
+a,
+a:focus,
+a:hover {
+    color: #fff;
+}
+
+/* Custom default button */
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus {
+    color: #333;
+    text-shadow: none; /* Prevent inheritance from `body` */
+    background-color: #fff;
+    border: .05rem solid #fff;
+}
+
+
+/*
+ * Base structure
+ */
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    background-color: #7f7f7f;
+}
+
+body {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-pack: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.cover_container {
+	height: 100%;
+	width: 100%;
+}
+header {
+	display: block;
+	background-color: #3c689e;
+	min-height: 90px;
+}
+
+.sitemenu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 15px 0 0 15px;
+}
+
+.usermenu {
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin: 10px 3px 0 0;
+}
+
+.usermenu  span {
+    color: #000;
+    padding: 0 10px;
+}
+
+
+
+header .navbar .dropdown.usermenu .dropbtn {
+    /*background-color: #4CAF50;*/
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+}
+
+header .navbar .dropdown.usermenu {
+    position: relative;
+    display: inline-block;
+}
+
+header .navbar .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0;
+}
+
+    header .navbar .dropdown-content a {
+        color: black;
+        padding: 5px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+        header .navbar .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+header .navbar .dropdown:hover .dropdown-content {
+    display: block;
+}
+
+header .navbar .dropdown:hover .dropbtn {
+    /*background-color: #3e8e41;*/
+}
+
+.usermenu img {
+    vertical-align: bottom;
+}
+
+.navbar-brand {
+    margin: 0 50px;
+}
+
+    .navbar-brand > img {
+        margin: 0;
+        max-height: 38px;
+    }
+
+.modules_box {
+	padding: 50px 90px 10px;
+	text-align: center;
+	background-color: #7f7f7f;
+}
+
+.module {
+	display: inline-block;
+	width: 250px;
+	text-align: center;
+	overflow: hidden;
+	margin: 0 50px 10px;
+	min-height: 220px;
+	vertical-align: top;
+}
+
+    .module .headline {
+        font-size: 32px;
+        margin: 10px 0;
+    }
+
+.module_icon {
+    display: block;
+}
+
+   .module_icon > img {
+	height: 60px;
+}
+
+.module ul {
+    padding: 0 20px;
+    list-style: none;
+    display: block;
+}
+
+    .module ul li {
+        text-align: center;
+    }
+
+     .module ul li > a {
+	color: #000;
+	font-size: 18px;
+}
+
+      .module ul li > a:hover {
+       text-decoration:none;
+    }
+
+
+.module ul li > a.disable {
+    color: #404040;
+    pointer-events: none;
+}
+
+/*New add*/
+
+/*a.disable {
+    color: gray;
+    pointer-events: none;
+    cursor: default;
+}*/

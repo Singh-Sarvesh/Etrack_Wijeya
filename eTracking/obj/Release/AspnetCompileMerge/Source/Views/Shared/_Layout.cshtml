@@ -1,0 +1,116 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+    <title>ADPRO :: Track</title>
+
+    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/jquery-ui.css" rel="stylesheet" />
+    <link href="~/bootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/css/daterangepicker.css" rel="stylesheet" />
+    <link href="~/css/summit-range-input.css" rel="stylesheet" />
+    <link href="~/css/chosen/chosen.css" rel="stylesheet" />
+    <link href="~/css/style.css?BuildNo=@System.Web.Configuration.WebConfigurationManager.AppSettings["BuildNo"]" rel="stylesheet">
+
+</head>
+<body>
+    <header class="fixed-top" id="header">
+        <nav class="navbar navbar-expand-md">
+            <a class="sitemenu" href="#"><img src="~/img/menu-24.png" /></a>
+            <a class="navbar-brand" href="#"><img src="~/img/logo.png" /></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto" id="ulTopMenu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/TrackOrders/Orders">Track Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/TrackInsertions/Insertions">Track Insertions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" style="display:none;">Track Invoices</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" style="display:none;">Track Receipts</a>
+                    </li>
+                </ul>
+            </div>
+            <span class="username">@Session["UserName"] &nbsp; |&nbsp; @Session["Center"] &nbsp; |@*, @DateTime.Now.ToString("dd/MMM/yyyy")*@</span>
+            @*<div class="dropdown usermenu">
+                    <a class="dropbtn" href="#"><img src="~/img/user-24.png" /></a>
+                    <div class="dropdown-content">
+                        <a href="http://192.168.15.25/Adpro/Home/Welcome">Home</a>
+                        <a href="http://192.168.15.25/Adpro/" onclick="UserLogOut()">Close</a>
+                    </div>
+                </div>*@
+            <a href="#" class="btn btn-sm btn_transparent" onclick="UserLogOut()" style="color:#fff;font-size:16px;">
+                Close
+                <img src="~/img/cross-16.png" />
+            </a>
+        </nav>
+    </header>
+
+    <div class="notification_box" id="showMSG">
+    </div>
+   
+    <script src="~/Scripts/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-ui.js" type="text/javascript"></script>
+    <script src="~/Scripts/popper.min.js"></script>
+    <script src="~/bootstrap/js/bootstrap-multiselect.js"></script>
+    <script src="~/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/ag-grid-enterprise.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/daterangepicker.min.js"></script>
+    <script src="~/Scripts/summit.range.input.js"></script>
+    <script src="~/Scripts/main.js"></script>
+    <script src="~/css/chosen/chosen.js"></script>
+    @RenderBody()
+    <script>
+        $(document).ready(function () {
+            //$("#datechange").click(function () {
+            //    $('#dateModal').modal('show');
+            //});
+
+            var myEvent = window.attachEvent || window.addEventListener;
+            var chkevent = window.attachEvent ? 'onbeforeunload' : 'beforeunload'; /// make IE7, IE8 compitable
+            myEvent(chkevent, function (e) { // For >=IE7, Chrome, Firefox
+                if ($('[parameter="batchno"]').val() != '0') {
+                    //var confirmationMessage = 'Are you sure to leave the page?';  // a space
+                    //(e || window.event).returnValue = confirmationMessage;
+                    //alert(window.event.keyCode);
+                    //return confirmationMessage;
+                    unlockorder();
+                }
+            });
+
+        });
+        var pageUrl = window.location.href.split('/')[window.location.href.split('/').length - 1];
+
+        switch (pageUrl.toLowerCase().replace('#', '')) {
+            case 'orders':
+                $('#ulTopMenu li').eq(0).addClass('active');
+                break;
+            case 'insertions':
+                $('#ulTopMenu li').eq(1).addClass('active');
+                break;
+            case 'invoices':
+                $('#ulTopMenu li').eq(2).addClass('active');
+                break;
+            case 'receipts':
+                $('#ulTopMenu li').eq(3).addClass('active');
+                break;
+            default:
+                $('#ulTopMenu li').eq(1).addClass('active');
+                break;
+        }
+
+    </script>
+
+</body>
+</html>

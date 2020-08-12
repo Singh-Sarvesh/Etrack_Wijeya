@@ -1,0 +1,59 @@
+/*!
+ * Summit Range Input 1.0.0 (http://summitindia.com/)
+ * Author: Vinod Kumar Dhaker
+ * Description : Stylesheet for range input
+ */
+
+
+.input_box {
+    border: 1px solid #bfbfbf;
+    overflow: hidden;
+    width: 250px;
+    background-color: #bfbfbf;
+}
+
+.input_search_box_btn {
+    background-color: #bfbfbf;
+    border-left: 1px solid #7f7f7f;
+    border-right: 0;
+    border-bottom: 0;
+    border-top: 0;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.input_box .range_from {
+    width: calc(50%);
+    border: 0;
+    background-color: #fff !important;
+}
+
+.input_box .separator {
+    width: 20px;
+    display: block;
+    height: 30px;
+    float: left;
+    padding: 4px 7px;
+    /*visibility: hidden;*/
+}
+
+.input_box .range_to {
+    width: calc(50% - 5px );
+    border: 0;
+    text-align: center;
+    background-color: #fff !important;
+    margin-left: 5px;
+}
+
+    .input_box .range_from:focus, .input_box .range_to:focus {
+        outline: 0;
+        box-shadow: none;
+    }
+
+
+/*New add*/
+.form-control {
+    /*background-color: transparent !important;*/
+    /*text-align:center;*/
+    float: left;
+}

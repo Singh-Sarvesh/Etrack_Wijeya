@@ -1,0 +1,624 @@
+﻿@{
+    ViewBag.Title = "WebTrack";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    
+    <link href="~/css/daterangepicker.css" rel="stylesheet" />
+    <link href="~/css/summit-range-input.css" rel="stylesheet" />
+
+    <!-----For multiselect dropdown-->
+    <link href="~/bootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <script src="~/bootstrap/js/bootstrap-multiselect.js"></script>
+    <script src="~/Scripts/ag-grid-enterprise.min.js"></script>
+
+    <script type="text/javascript">
+        var appRoot = '@System.Web.Configuration.WebConfigurationManager.AppSettings["RootPath"]';
+    </script>
+    <style>
+        .ag-tool-panel {
+            display: none;
+        }
+
+        #btnSearch {
+            background: transparent;
+            border: none;
+        }
+
+        .search_block {
+            margin: 0 5px;
+        }
+
+        #ddlStatus {
+            -moz-appearance: none; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+        }
+
+        .ui-autocomplete.ui-widget {
+            font-family: Verdana,Arial,sans-serif;
+            font-size: 12px;
+            width: 292px !important;
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="filterbar" id="filterBar">
+                <ul class="nav filter_nav">
+                    <li class="nav-item">
+                        <a class="nav-link active lnkAdType" val="0">Display</a>
+                    </li>
+                    <li class="nav-item">
+                        <input type="hidden" id="hdnIsClassified" value="0" />
+                        <a class="nav-link lnkAdType" val="1">Classified</a>
+                    </li>
+                    <li class="nav-item">
+                        <input type="hidden" id="flag" value="0" />
+                        <a class="nav-links active lnkFlagType" val="0" style="margin-left: 100px;">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-links lnkFlagType" val="1">Credit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-links  lnkFlagType" val="2">Prepaid</a>
+                    </li>
+                    <li class="nav-item">
+                        <input type="hidden" id="orderstatus" value="0" />
+                        <a class="nav-linkes active lnkOrderType" val="0" style="margin-left: 100px;">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-linkes lnkOrderType" val="1">Suspended</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-linkes lnkOrderType" val="2">Cancelled</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!---- hidden fields-->
+
+            <input type="hidden" id="txtFromDate" />
+            <input type="hidden" id="txtToDate" />
+            <input type="hidden" id="hdnScreenId" value="1" />
+            <input type="hidden" id="hdnagencyid" />
+            <input type="hidden" id="hdnclientid" />
+
+            <!---- filter Options-->
+            <div class="filterbar_two" id="filterBarTwo">
+                <ul class="nav">
+                    <li style="margin-right:35px;">
+                        <button type="button" button"" style="background:transparent;border:none;" onclick="RefreshData();" title="RefreshData"> <img src="~/img/refresh_24.png" /></button>
+                    </li>
+                    <li>
+                        <div class="input-group">
+                            <div id="inputBox1" class="input_box">
+                                <input id="rangeFrom1" class="form-control form-control-sm range_from" type="text" onkeypress="return isNumber(event)">
+                                <span id="separator1" class="separator" style="visibility: visible;"> to </span>
+                                <input id="rangeTo1" class="form-control form-control-sm form-control range_to" type="text" onkeypress="return isNumber(event)">
+                            </div>
+                            <button id="btnSearch" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                        </div>
+
+                        @*<div class="input-group">
+                                <div class="input_box" id="divinvoicenum">
+                                    <input id="rangeFrom" class="form-control form-control-sm range_from" type="text" onkeypress="return isNumber(event)" placeholder="Invoice Num">
+                                    <span id="separator" class="separator" style="visibility: hidden;"> to </span>
+                                    <input id="rangeTo" class="form-control form-control-sm form-control range_to" type="text" onkeypress="return isNumber(event)" placeholder="Range">
+                                </div>
+                                <button id="btnSearch" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>*@
+
+                        @*<div class="search_block">
+                                <input type="text" id="frominvoicenum" onkeypress="return isNumber(event)" class="form-control search_filter" placeholder="Invoice Num Range" />
+                                <button id="btnSearch" class="btn btn_search_custom" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>*@
+                    </li>
+                    <li>
+                        <div class="input-group">
+                            <div id="inputBox2" class="input_box">
+                                <input id="rangeFrom2" class="form-control form-control-sm range_from" type="text" onkeypress="return isNumber(event)">
+                                <span id="separator2" class="separator" style="visibility: visible;"> to </span>
+                                <input id="rangeTo2" class="form-control form-control-sm form-control range_to" type="text" onkeypress="return isNumber(event)">
+                            </div>
+                            <button id="btnSearch" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                        </div>
+                        @*<div class="input-group">
+                                <div class="input_box" id="divboxnum">
+                                    <input id="rangeFrom1" class="form-control form-control-sm range_from" type="text" onkeypress="return isNumber(event)">
+                                    <span id="separator1" class="separator" style="visibility: hidden;"> to </span>
+                                    <input id="rangeTo1" class="form-control form-control-sm form-control range_to" type="text" onkeypress="return isNumber(event)">
+                                </div>
+                                <button id="btnSearch" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>*@
+                        @*<div class="search_block">
+                                <input type="text" id="fromboxnum" onkeypress="return isNumber(event)" class="form-control search_filter" placeholder="Box Num Range" />
+                                <button id="btnSearch" class="btn btn_search_custom" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>*@
+                    </li>
+                    <li>
+                        <div class="input-group">
+                            <div id="inputBox3" class="input_box">
+                                <input id="rangeFrom3" class="form-control form-control-sm range_from" type="text" onkeypress="return isNumber(event)">
+                                <span id="separator3" class="separator" style="visibility: visible;"> to </span>
+                                <input id="rangeTo3" class="form-control form-control-sm form-control range_to" type="text" onkeypress="return isNumber(event)">
+                            </div>
+                            <button id="btnSearch" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                        </div>
+                        @*<div class="input-group">
+                                <div class="input_box" id="divbookingnum">
+                                    <input id="rangeFrom" class="form-control form-control-sm range_from" type="text" onkeypress="return isNumber(event)">
+                                    <span id="separator" class="separator" style="visibility: hidden;"> to </span>
+                                    <input id="rangeTo" class="form-control form-control-sm form-control range_to" type="text" onkeypress="return isNumber(event)">
+                                </div>
+                                <button id="btnSearch" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>*@
+
+                        @*<div class="search_block">
+                                <input type="text" id="frombookingnum" onkeypress="return isNumber(event)" class="form-control search_filter" placeholder="Booking Num Range" />
+                                <button id="btnSearch" class="btn btn_search_custom" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>*@
+                    </li>
+                    <li>
+                        <div class="input-group">
+                            <div id="inputBox4" class="input_box">
+                                <input id="rangeFrom4" class="form-control form-control-sm range_from" type="text" onkeypress="return isNumber(event)">
+                                <span id="separator4" class="separator" style="visibility: visible;"> to </span>
+                                <input id="rangeTo4" class="form-control form-control-sm form-control range_to" type="text" onkeypress="return isNumber(event)">
+                            </div>
+                            <button id="btnSearch" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                        </div>
+                        @*<div class="input-group">
+                                <div class="input_box" id="divordernum">
+                                    <input id="rangeFrom" class="form-control form-control-sm range_from" type="text" onkeypress="return isNumber(event)">
+                                    <span id="separator" class="separator" style="visibility: hidden;"> to </span>
+                                    <input id="rangeTo" class="form-control form-control-sm form-control range_to" type="text" onkeypress="return isNumber(event)">
+                                </div>
+                                <button id="btnSearch" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>*@
+                        @*<div class="search_block">
+                                <input type="text" id="fromroid" onkeypress="return isNumber(event)" class="form-control search_filter" placeholder="Order Num Range" />
+                                <button id="btnSearch" class="btn btn_search_custom" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>*@
+                    </li>
+                    <li>
+                        <div class="input-group">
+                            <div id="inputBox5" class="input_box">
+                                <input id="rangeFrom5" class="form-control form-control-sm range_from" type="text" onkeypress="return isNumber(event)">
+                                <span id="separator5" class="separator" style="visibility: visible;"> to </span>
+                                <input id="rangeTo5" class="form-control form-control-sm form-control range_to" type="text" onkeypress="return isNumber(event)">
+                            </div>
+                            <button id="btnSearch" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                        </div>
+                        @*<div class="search_block">
+                                <input type="text" id="fromreceiptid" onkeypress="return isNumber(event)" class="form-control search_filter" placeholder="Receipt Num Range" />
+                                <button id="btnSearch" class="btn btn_search_custom" type="button" onclick='ShowtrackingData(appRoot, $("#SummaryMainGrid"))'><img src="~/img/search_white_24.png" /></button>
+                            </div>*@
+                    </li>
+                </ul>
+            </div>
+
+
+            <!--Table Grid -->
+            <div class="site_inner_container row-eq-height" id="siteInnerContainer">
+                <div class="col-lg-4">
+
+                    <div class="block_one" style="width: 100%; height: calc(100% - 130px);">
+
+                        <div class="row">
+                            <div class="col-sm-3 filter_label">
+                                <label>Agency</label>
+                            </div>
+                            <div class="col-sm-9 filter_field">
+                                <input class="form-control form-control-sm" id="agencyid" parameter="agency" style="width: calc(100% - 20px); float: left;" />
+                                <span style="width: 20px; float: right; cursor: pointer;"><img id="filter_agency" src="~/img/filter_darkgrey_24.png" /></span>
+                            </div>
+
+                            <div class="col-sm-3 filter_label">
+                                <label>Client</label>
+                            </div>
+                            <div class="col-sm-9 filter_field">
+                                <input class="form-control form-control-sm" id="clientid" parameter="client" style="width: calc(100% - 20px); float: left;" />
+                                <span style="width: 20px; float: right; cursor: pointer;"><img id="filter_client" src="~/img/filter_darkgrey_24.png" /></span>
+                            </div>
+
+                            <div class="col-sm-3 filter_label">
+                                <label>Canvassor</label>
+                            </div>
+                            <div class="col-sm-9 filter_field">
+                                <select class="form-control form-control-sm" id="canvassorid" newflag="forXmltype" parameter="canvassor" style="width: 100%;"></select>
+                            </div>
+
+                            <div class="col-sm-3 filter_label">
+                                <label>RO Number</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <input class="form-control form-control-sm" id="ronumber" style="width: 100%;" placeholder="RO No." maxlength="9" onkeypress="return isNumber(event)" />
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>Machine</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <input class="form-control form-control-sm" id="machineid" style="width: 100%;" placeholder="Machine" maxlength="9" />
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>Package</label>
+                            </div>
+                            <div id="PackageType" class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="packageidlist" newflag="forXmltype" parameter="package" style="width: 100%;" multiflag="multiple" multiple></select>
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>Ad Type</label>
+                            </div>
+                            <div id="divADType" class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="adtypeidlist" newflag="forXmltype" parameter="adtype" style="width: 100%;" multiflag="multiple" multiple></select>
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>Product</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="productid" newflag="forXmltype" parameter="product" style="width: 100%;"></select>
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>SME</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="smeid" newflag="forXmltype" parameter="sme" style="width: 100%;"></select>
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>Bk Centre</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="bookingcentreid" newflag="forXmltype" parameter="bookingcentre" style="width: 100%;"></select>
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label> Rev Centre</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="revenuecentreid" newflag="forXmltype" parameter="revenuecentre" style="width: 100%;"></select>
+                            </div>
+
+                            <div class="col-sm-3 filter_label">
+                                <label> Size</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="adsizeid" newflag="forXmltype" parameter="adsize" style="width: 100%;"></select>
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>  Book Exec</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="bookingexecid" newflag="forXmltype" parameter="bookingexec" style="width: 100%;"></select>
+                            </div>
+
+                            <div class="col-sm-3 filter_label">
+                                <label> Premia</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="premiaid" newflag="forXmltype" parameter="premia" style="width: 100%;"></select>
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label> Colour</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="colorid" newflag="forXmltype" parameter="color" style="width: 100%;"></select>
+                            </div>
+
+                            <div class="col-sm-3 filter_label">
+                                <label> Style</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="stylesheetid" newflag="forXmltype" parameter="style" style="width: 100%;"></select>
+                            </div>
+                            <div class="col-sm-3 filter_label">
+                                <label>  Bill Type</label>
+                            </div>
+                            <div class="col-sm-3 filter_field">
+                                <select class="form-control form-control-sm" id="billtypeid" newflag="forXmltype" parameter="billtype" style="width: 100%;"></select>
+                            </div>
+
+                            <div class="col-sm-3 filter_label">
+                                <label>Classification</label>
+                            </div>
+                            <div class="col-sm-9 filter_field">
+                                <input class="form-control form-control-sm" id="adtypeid" parameter="adclassification" style="width: 100%;" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="booking_caleder">
+                        <span class="refresh_icon" title="refresh">
+                            <img src="~/img/refresh_darkgrey_24.png" />
+                        </span>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" val="1">Booking Date</a>
+                            </li>
+                            <li class="nav-item">
+                                <input type="hidden" id="dateflag" value="1" />
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" val="2">Schedule date</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <div id="orderRange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                    <i class="fa fa-calendar"></i>&nbsp;
+                                    <span></span> <i class="fa fa-caret-down"></i>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="block_two" style="width: 100%;  height:100%;">
+                        <div id="SummaryMainGrid" style="width: 100%;  height:100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Buttons button_set_bottom -->
+        <div class="container-fluid" id="btnprovisional">
+            <div class="col-lg-12">
+                <a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" onclick="ShowtrackingData(appRoot, $('#SummaryMainGrid'))">SHOW<img src="~/img/ok_white_24.png" /></a>
+                <a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" onclick="RevivetrackingData(appRoot, $('#SummaryMainGrid'))" style="display:none;">Open ORDER <img src="~/img/ok_white_24.png" /></a>
+                <a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="margin-left:285px;display:none;" onclick="CanceltrackingData(appRoot, $('#SummaryMainGrid'))">CANCEL ORDER <img src="~/img/delete_white_24.png" /></a>
+                <a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="margin-left:50px;display:none;" onclick="SuspendtrackingData(appRoot, $('#SummaryMainGrid'))">SUSPEND ORDER <img src="~/img/cross_white_24.png" /></a>
+                <a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="margin-left: 50px; float: right;display:none;" onclick="OrderhistorytrackingData(appRoot, $('#SummaryMainGrid'))"> MY Log</a>
+                <a class="btn btn-primary adpro_greea_ui_btn" href="#" role="button" style="margin-left:50px;float:right;display:none;" onclick="UserhistorytrackingData(appRoot, $('#SummaryMainGrid'))">HISTORY</a>
+            </div>
+        </div>
+    </div>
+
+     <!-- Agency Filter Modal -->
+    <div class="modal fade adpro_modal_ui" id="agencyFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Agency Filter</h5>
+                    @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>*@
+                    <span data-dismiss="modal"><img src="~/img/cross_white_24.png" /></span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="agencycatid" class="col-form-label">Agency Type</label>
+                            <select class="form-control form-control-sm" id="agencycatid" newflag="forXmltype" parameter="agencycat" onchange="agencyidchange()"></select>
+                        </div>
+                        @*<div class="form-group">
+                                <label for="ddlAgencyCity" class="col-form-label">Agency City</label>
+                                <select id="ddlAgencyCity" class="form-control form-control-sm"></select>
+                            </div>*@
+                        <div class="form-group">
+                            <label for="agencynameid" class="col-form-label">Agency Name</label>
+                            <input class="form-control form-control-sm" id="agencynameid" parameter="agency" onchange="agencynamechange()" />
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      <!-- Client Filter Modal -->
+    <div class="modal fade adpro_modal_ui" id="clientFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Client Filter</h5>
+                    @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>*@
+                    <span data-dismiss="modal"><img src="~/img/cross_white_24.png" /></span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="clientcatid" class="col-form-label">Client Type</label>
+                            <select class="form-control form-control-sm" id="clientcatid" newflag="forXmltype" parameter="clientcat" onchange="clientidchange()"></select>
+                        </div>
+                        @*<div class="form-group">
+                                <label for="ddlClientCity" class="col-form-label">Client City</label>
+                                <select id="ddlClientCity" class="form-control form-control-sm"></select>
+                            </div>*@
+                        <div class="form-group">
+                            <label for="clientnameid" class="col-form-label">Client Name</label>
+                            <input class="form-control form-control-sm" id="clientnameid" parameter="client" onchange="clientnamechange()" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/daterangepicker.min.js"></script>
+    <script src="~/Scripts/etracking.js"></script>
+    <script src="~/Scripts/summit.range.input.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#inputBox1").summitRangeInput({
+                rangeFrom: '#rangeFrom1',
+                rangeTo: '#rangeTo1',
+                separator: '#separator1',
+            });
+            $("#inputBox2").summitRangeInput({
+                rangeFrom: '#rangeFrom2',
+                rangeTo: '#rangeTo2',
+                separator: '#separator2',
+            });
+            $("#inputBox3").summitRangeInput({
+                rangeFrom: '#rangeFrom3',
+                rangeTo: '#rangeTo3',
+                separator: '#separator3',
+            });
+            $("#inputBox4").summitRangeInput({
+                rangeFrom: '#rangeFrom4',
+                rangeTo: '#rangeTo4',
+                separator: '#separator4',
+            });
+            $("#inputBox5").summitRangeInput({
+                rangeFrom: '#rangeFrom5',
+                rangeTo: '#rangeTo5',
+                separator: '#separator5',
+            });
+
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+
+            function cb(start, end) {
+                $('#orderRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                $('#txtFromDate').val(start.format('D/MM/YYYY'));
+                $('#txtToDate').val(end.format('D/MM/YYYY'));
+            }
+
+            $('#orderRange').daterangepicker({
+                "drops": "up",
+                startDate: start,
+                endDate: end,
+            }, cb);
+
+            cb(start, end);
+
+            pageload(appRoot);
+
+            $('.lnkAdType').click(function () {
+                $('.lnkAdType.active').removeClass('active');
+                $(this).addClass('active');
+                $('#hdnIsClassified').val($(this).attr('val'));
+                $("#adtypeidlist").multiselect('rebuild');
+                $("#packageidlist").multiselect('rebuild');
+                BindFiltersData(appRoot);
+                $("#adtypeidlist").multiselect('rebuild');
+                $("#packageidlist").multiselect('rebuild');
+                ShowtrackingData(appRoot, $("#SummaryMainGrid"));
+            });
+
+            $('.lnkOrderType').click(function () {
+                $('.lnkOrderType.active').removeClass('active');
+                $(this).addClass('active');
+                $('#orderstatus').val($(this).attr('val'));
+                ShowtrackingData(appRoot, $("#SummaryMainGrid"));
+            });
+
+            $('.lnkFlagType').click(function () {
+                $('.lnkFlagType.active').removeClass('active');
+                $(this).addClass('active');
+                $('#flag').val($(this).attr('val'));
+                ShowtrackingData(appRoot, $("#SummaryMainGrid"));
+            });
+
+            $('.nav-link').click(function () {
+                $('.nav-link.active').removeClass('active');
+                $(this).addClass('active');
+                $('#dateflag').val($(this).attr('val'));
+            });
+
+            // SET PAGE HEIGHT AND WIDTH
+            var windowHeight = $(window).height();
+            var headerHeight = $("#header").outerHeight(true);
+            var filterbarHeight = $("#filterBar").outerHeight(true);
+            var filterbarTwoHeight = $("#filterBarTwo").outerHeight(true);
+            var bottomButton = 50;
+            var height = windowHeight - (headerHeight + filterbarHeight + filterbarTwoHeight + bottomButton);
+            $("#siteInnerContainer").css({ 'height': height });
+
+
+            var allMultiSelect = $('[multiflag="multiple"]');
+            for (var i = 0; i < allMultiSelect.length; i++) {
+                $("#" + allMultiSelect[i].id).multiselect({
+                    maxHeight: 140,
+                    buttonWidth: 100,
+                    numberDisplayed: 0,
+                    includeSelectAllOption: true,
+                    Width: 100,
+                });
+            }
+
+            // Package Type check and uncheck
+            $('#packageidlist').change(function () {
+                if ($("#packageidlist option").length == $("#packageidlist option:selected").length) {
+                    $("#PackageType [value = 'multiselect-all']").prop("checked", true);
+                }
+                else {
+                    $("#PackageType [value = 'multiselect-all']").removeAttr("checked").parents('.active').removeClass('active');
+                }
+            });
+            $("#PackageType [value = 'multiselect-all']").change(function () {
+                if ($('[parameter=package]').find(':checked').val() == 'multiselect-all') {
+                    $('#PackageType input[type="checkbox"]').prop("checked", true);
+                }
+                else
+                    $('#PackageType input[type="checkbox"]').prop("checked", false);
+            });
+
+            // AD Type check and uncheck
+            $('#adtypeidlist').change(function () {
+                if ($("#adtypeidlist option").length == $("#adtypeidlist option:selected").length) {
+                    $("#divADType [value = 'multiselect-all']").prop("checked", true);
+                }
+                else {
+                    $("#ADType [value = 'multiselect-all']").removeAttr("checked").parents('.active').removeClass('active');
+                }
+            });
+
+            $("#divADType [value = 'multiselect-all']").change(function () {
+                if ($('[parameter=adtype]').find(':checked').val() == 'multiselect-all')
+                    $('#divADType input[type="checkbox"]').prop("checked", true);
+                else
+                    $('#divADType input[type="checkbox"]').prop("checked", false);
+            });
+
+
+            //open modal
+            $("#filter_agency").on("click", function () {
+                $("#agencyFilter").modal("show");
+            });
+
+            $("#filter_client").on("click", function () {
+                $("#clientFilter").modal("show");
+            });
+
+        });
+
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+
+        function onFilterTextBoxChanged() {
+
+        }
+
+        function agencynamechange() {
+            $("#agencyid").val($("#agencynameid").val());
+        }
+
+        function clientnamechange() {
+            $("#clientid").val($("#clientnameid").val());
+        }
+
+
+    </script>
+}
+
+
+
+
+
+
+

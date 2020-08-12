@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTracking", "eTracking\eTracking.csproj", "{C52A6F05-3E9C-4BEC-92F6-8D5E9BF11939}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTracking_DAL", "eTracking_DAL\eTracking_DAL.csproj", "{4B5310A3-3E58-4454-B3E9-AEBBA7950987}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C52A6F05-3E9C-4BEC-92F6-8D5E9BF11939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C52A6F05-3E9C-4BEC-92F6-8D5E9BF11939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C52A6F05-3E9C-4BEC-92F6-8D5E9BF11939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C52A6F05-3E9C-4BEC-92F6-8D5E9BF11939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B5310A3-3E58-4454-B3E9-AEBBA7950987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B5310A3-3E58-4454-B3E9-AEBBA7950987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B5310A3-3E58-4454-B3E9-AEBBA7950987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B5310A3-3E58-4454-B3E9-AEBBA7950987}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>XLSX.Reader</id>
+    <version>1.0.0</version>
+    <title>XLSX.Reader</title>
+    <authors>Georgi Kamacharov</authors>
+    <owners>Georgi Kamacharov</owners>
+    <iconUrl>https://github.com/gogyprogramming/MouseMover/blob/master/XMLReader/nuget.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package is an Excel file reader. More specifically, Excel's ".xlsx" format documents. It has various functionality that return data in the file's sheets. The biggest advantage is that there are multiple functions that return the data in different formats.</description>
+    <summary>Package is an Excel file reader. More specifically, Excel's ".xlsx" format documents. It has various functionality that return data in the file's sheets. The biggest advantage is that there are multiple functions that return the data in different formats.</summary>
+    <copyright>Copyright 2016</copyright>
+    <tags>Excel excel EXCEL xlsx XLSX reader READER format FORMAT file FILE</tags>
+  </metadata>
+</package>
